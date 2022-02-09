@@ -1,0 +1,39 @@
+{
+  "name": "bitpp-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.ts",
+  "scripts": {
+    "start": "ts-node src/app.ts",
+    "migrate": "npx prisma migrate dev --name init",
+    "generate": "npx prisma generate",
+    "initalize": "ts-node prisma/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@koa/cors": "^3.1.0",
+    "@koa/router": "^10.1.1",
+    "@prisma/client": "3.8.1",
+    "@types/koa__cors": "^3.1.1",
+    "dotenv": "^14.2.0",
+    "ioredis": "^4.28.4",
+    "koa": "^2.13.4",
+    "koa-body": "^4.2.0",
+    "koa-logger": "^3.2.1",
+    "koa-ratelimit": "^5.0.1",
+    "mathjs": "^10.1.0",
+    "node-binance-api": "^0.13.1"
+  },
+  "devDependencies": {
+    "@types/koa": "^2.13.4",
+    "@types/koa-logger": "^3.1.2",
+    "@types/koa-ratelimit": "^4.2.4",
+    "@types/koa__router": "^8.0.11",
+    "@types/node": "^17.0.9",
+    "prisma": "^3.8.1",
+    "ts-node": "^10.4.0",
+    "typescript": "^4.5.4"
+  }
+}

@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Markets {
+  id BigInt @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  symbol String @db.VarChar(255) @unique
+  time BigInt @default(0)
+  price Float @default(0)
+  fundingFee Float @default(0)
+  nextFundingTime BigInt @default(0)
+  change Float @default(0)
+  changePercent Float @default(0)
+}
+
+model Statistics {
+  id BigInt @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  date DateTime @unique
+  // key currency: BTC
+  marginBalance Float @default(0)
+  walletBalance Float @default(0)
+  unrealizedProfit Float @default(0)
+  fundingSum Float @default(0)
+}
+
+model Account {
+  id BigInt @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  asset String @db.VarChar(255) @unique
+  walletBalance Float @default(0)
+  unrealizedProfit Float @default(0)
+  marginBalance Float @default(0)
+  maintMargin Float @default(0)
+  initialMargin Float @default(0)
+  positionInitialMargin Float @default(0)
+  openOrderInitialMargin Float @default(0)
+  maxWithdrawAmount Float @default(0)
+  crossWalletBalance Float @default(0)
+  crossUnPnl Float @default(0)
+  availableBalance Float @default(0)
+}
+
+model Positions {
+  id BigInt @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  symbol String @db.VarChar(255) @unique
+  leveraged Int
+  side String @db.VarChar(4)
+  size Float @default(0)
+  entryPrice Float @default(0)
+  markPrice Float @default(0)
+  liqPrice Float @default(0)
+  margin Float @default(0)
+  marginType String @db.VarChar(8)
+  unrealizedProfit Float @default(0)
+}
+
+model Incomes {
+  id BigInt @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  time BigInt @default(0)
+  tranId String @db.VarChar(255) @unique
+  symbol String @db.VarChar(255)
+  amount Float @default(0)
+}
+
+model Trades {
+  id BigInt @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  orderId BigInt @unique
+  time BigInt @default(0)
+  symbol String @db.VarChar(255)
+  side String @db.VarChar(4)
+  size Float @default(0)
+  total Float @default(0)
+}

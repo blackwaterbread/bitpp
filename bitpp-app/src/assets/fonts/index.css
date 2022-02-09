@@ -1,0 +1,48 @@
+@font-face {
+	font-family: 'IBMPlexSansKR';
+	font-weight: 700;
+	font-display: swap;
+	src: local('IBMPlexSansKR Bold'), url('./ttf/IBMPlexSansKR-Bold.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'IBMPlexSansKR';
+	font-weight: 600;
+	font-display: swap;
+	src: local('IBMPlexSansKR SemiBold'), url('./ttf/IBMPlexSansKR-SemiBold.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'IBMPlexSansKR';
+	font-weight: 500;
+	font-display: swap;
+	src: local('IBMPlexSansKR Medium'), url('./ttf/IBMPlexSansKR-Medium.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'IBMPlexSansKR';
+	font-weight: 400;
+	font-display: swap;
+	src: local('IBMPlexSansKR Regular'), url('./ttf/IBMPlexSansKR-Regular.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'IBMPlexSansKR';
+	font-weight: 300;
+	font-display: swap;
+	src: local('IBMPlexSansKR Light'), url('./ttf/IBMPlexSansKR-Light.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'IBMPlexSansKR';
+	font-weight: 200;
+	font-display: swap;
+	src: local('IBMPlexSansKR ExtraLight'), url('./ttf/IBMPlexSansKR-ExtraLight.ttf') format('truetype');
+}
+
+@font-face {
+	font-family: 'IBMPlexSansKR';
+	font-weight: 100;
+	font-display: swap;
+	src: local('IBMPlexSansKR Thin'), url('./ttf/IBMPlexSansKR-Thin.ttf') format('truetype');
+}
