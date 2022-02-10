@@ -92,7 +92,7 @@ function AssetsOverview(props: AssetsOverviewProp) {
                                 (≈ ${(keyPrice * totalWalletBalance).toFixed(2)})
                             </Text>
                         </Cell> */}
-                        <Cell textColor='green.300'>
+                        <Cell textColor={colorPNL}>
                             {unrealizedProfit.toFixed(8)} {keyAsset?.asset} <br />
                             <Text
                                 fontSize='sm'
