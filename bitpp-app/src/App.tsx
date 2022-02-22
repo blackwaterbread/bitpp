@@ -2,12 +2,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { Box, Skeleton, Text, useInterval } from '@chakra-ui/react';
 import Fees from './components/Fees';
 import Positions from './components/Positions';
-import PriceScrenner from './components/PriceScreener';
 // import Trades from './components/Trades';
 import FeeOverview from './components/FeeOverview';
 import BinanceLogo from './assets/logos/Binance.svg';
 import Request from './lib/request';
-import FundingScreener from './components/FundingScreener';
+import PriceScreener from './components/PriceScreener';
 import AssetsOverview from './components/AssetsOverview';
 
 // th, td border #222222
@@ -105,35 +104,40 @@ function App() {
           bgGradient='linear(to-l, #00e887, #00dff3)'
           bgClip='text'
           fontSize='6xl'
-          fontWeight='extrabold'
+          fontFamily='NanumSquareExtraBold'
+        // fontWeight='extrabold'
         >
           Bit++
         </Text>
+        <Box
+          className='w-full h-1 -mt-3 mb-3 rounded-xl'
+          bgGradient='linear(to-l, #00e887, #00dff3)'
+        // fontWeight='extrabold'
+        />
         <Skeleton isLoaded={state.isLoaded} rounded='xl'>
           <div className='space-y-4'>
             <div className='flex flex-row space-x-4'>
-              {
-                data.markets.map((x: any) => {
-                  return (
-                    <Box className='bg-[#282a36] rounded-xl w-1/2'>
-                      <PriceScrenner
-                        symbol={x.symbol}
-                        price={x.price}
-                        changePercent={x.changePercent}
-                      />
-                      <FundingScreener
-                        fundingFee={x.fundingFee}
-                        nextFundingFeeTime={x.nextFundingTime}
-                      />
-                    </Box>
-                  )
-                })
-              }
+              <Box className='bg-[#282a36] rounded-xl w-full px-4 py-3'>
+                <PriceScreener
+                  data={
+                    data.markets.map((x: any) => {
+                      return {
+                        symbol: x.symbol,
+                        price: x.price,
+                        changePercent: x.changePercent,
+                        fundingFee: x.fundingFee,
+                        nextFundingFeeTime: x.nextFundingTime
+                      }
+                    })
+                  }
+                />
+              </Box>
             </div>
-            <div className='bg-[#282a36] rounded-xl p-2'>
+            <div className='bg-[#282a36] rounded-xl px-3 py-4'>
               <Text
                 fontSize='2xl'
-                fontWeight='bold'
+                fontFamily='NanumSquareExtraBold'
+                // fontWeight='bold'
                 className='px-2 pb-2'
               >
                 요약
@@ -157,10 +161,11 @@ function App() {
                 />
               </div>
             </div>
-            <div className='bg-[#282a36] rounded-xl p-2'>
+            <div className='bg-[#282a36] rounded-xl px-3 py-4'>
               <Text
                 fontSize='2xl'
-                fontWeight='bold'
+                fontFamily='NanumSquareExtraBold'
+                // fontWeight='bold'
                 className='px-2 pb-2'
               >
                 포지션
@@ -168,10 +173,11 @@ function App() {
               <Positions data={data.account.positions} />
             </div>
             <div className='flex flex-col space-y-4'>
-              <div className='bg-[#282a36] p-2 rounded-xl h-full'>
+              <div className='bg-[#282a36] px-3 py-4 rounded-xl h-full'>
                 <Text
                   fontSize='2xl'
-                  fontWeight='bold'
+                  fontFamily='NanumSquareExtraBold'
+                  // fontWeight='bold'
                   className='px-2 pb-2'
                 >
                   수수료 내역
@@ -183,15 +189,15 @@ function App() {
         </Skeleton>
         <footer>
           <div className="container mt-1 p-4 mb-4 mx-auto flex justify-center items-center flex-col">
-            <p className="text-sm text-gray-400">
-              © 2021 bitpp —
+            <p className="text-sm text-gray-400 font-extrabold">
+              © 2022 bitpp —
               <a href="https://github.com/blackwaterbread" className="text-gray-500 ml-1" rel="noopener noreferrer" target="_blank">
                 @dayrain
               </a>
             </p>
             <p className='text-sm mt-1 pl-3 text-gray-400 flex items-center'>
               <a href='https://accounts.binance.com/en/register?ref=YNVD3WEH' rel="noopener noreferrer" target="_blank">
-                <img className='-ml-1' src={BinanceLogo} alt='Binance' />
+                <img src={BinanceLogo} alt='Binance' />
               </a>
             </p>
           </div>
