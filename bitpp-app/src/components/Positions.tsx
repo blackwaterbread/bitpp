@@ -34,19 +34,22 @@ interface PositionsProp {
 const Header = (props: TableColumnHeaderProps) => (
   <Th
     paddingX='2px'
-    paddingY='8px'
+    paddingY='6px'
     minWidth='80px'
     width='100px'
+    fontFamily='NanumSquareExtraBold'
     borderColor={Colors.inner}
     {...props}
   />
 );
 const Cell = (props: TableCellProps) => (
   <Td
+    className='align-top'
     paddingX='2px'
-    paddingY='8px'
+    paddingY='6px'
     textColor={Colors.text}
-    fontWeight='semibold'
+    fontFamily='NanumSquareExtraBold'
+    // fontWeight='semibold'
     borderColor={Colors.inner}
     {...props}
   />
@@ -71,17 +74,18 @@ function Positions(props: PositionsProp) {
                   <Text
                     fontSize='lg'
                     textColor={Colors.text}
-                    fontWeight='semibold'
+                    fontFamily='NanumSquareExtraBold'
+                    // fontWeight='semibold'
                   >
                     {Symbols[pos.symbol]}
                   </Text>
                 </div>
                 <div className='space-x-2'>
-                  <Tag colorScheme='green'>{MarginTypes[pos.marginType]}</Tag>
-                  <Tag colorScheme='orange'>{pos.leverage}x</Tag>
+                  <Tag fontFamily='NanumSquareExtraBold' colorScheme='green'>{MarginTypes[pos.marginType]}</Tag>
+                  <Tag fontFamily='NanumSquareExtraBold' colorScheme='orange'>{pos.leverage}x</Tag>
                 </div>
               </div>
-              <div className='flex flex-col px-2'>
+              <div className='flex flex-col space-y-2'>
                 <Table size='sm' textColor={Colors.text}>
                   <Thead>
                     <Tr>
