@@ -2,14 +2,15 @@ import Binance from 'node-binance-api';
 import { PrismaClient } from '@prisma/client';
 import * as math from 'mathjs';
 import { ENVIRONMENT } from './config';
-import { logVerbose } from './log';
+import { logError, logVerbose } from './log';
 import { SYMBOL_BTCUSD, SYMBOL_ETHUSD } from './constants';
+const prisma = new PrismaClient();
 
 export const BinanceAPI: Binance = new Binance().options({
     APIKEY: ENVIRONMENT.APIKEY,
     APISECRET: ENVIRONMENT.APISECRET
 });
-const prisma = new PrismaClient();
+
 const INTERVAL_FREQUENT = 1000;
 const INTERVAL_MINUTE = 60000;
 
@@ -187,24 +188,17 @@ async function workerFrequent() {
 }
 
 async function workerMinute() {
-    // const btcTrades = await binance.deliveryUserTrades('BTCUSD_PERP');
-    // const ethTrades = await binance.deliveryUserTrades('ETHUSD_PERP');
     try {
-        const [lastFunding, incomes] = await Promise.all([
-            prisma.incomes.findFirst({ orderBy: { id: 'desc' } }),
-            BinanceAPI.deliveryIncome({ incomeType: 'FUNDING_FEE' }),
-        ]);
+        const lastFunding = await prisma.incomes.findFirst({ orderBy: { time: 'desc' } });
+        const condition = lastFunding ? { startTime: Number(lastFunding.time) + 1 } : undefined;
+        const incomes = await BinanceAPI.deliveryIncome({ 
+            ...condition,
+            incomeType: 'FUNDING_FEE',
+            limit: 1000
+        });
         if (incomes.length) {
-            let latestIncomes;
-            if (lastFunding) {
-                // funding fee는 8시간마다 지급되므로 time이 같을 수는 없다.
-                latestIncomes = incomes.filter((v: any) => v.time > lastFunding.time);
-            }
-            else {
-                latestIncomes = incomes;
-            }
             await prisma.incomes.createMany({
-                data: latestIncomes.map((x: any) => {
+                data: incomes.map((x: any) => {
                     return {
                         symbol: x.symbol,
                         time: x.time,
@@ -213,15 +207,15 @@ async function workerMinute() {
                     }
                 })
             });
-            logVerbose(`[Worker-Minute] New income: ${latestIncomes.length}`);
+            logVerbose(`[Worker-Minute] New income: ${incomes.length}`);
         }
         else {
             logVerbose(`[Worker-Minute] There's no new income.`);
         }
     }
     catch (e) {
-        throw e;
-        // logError(`Something's wrong with Minute Worker: ${e}`);
+        logError(`Something's wrong with Minute Worker: ${e}`);
+        // throw e;
     }
 }
 
