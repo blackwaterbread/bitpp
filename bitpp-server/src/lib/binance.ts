@@ -29,9 +29,10 @@ interface IMarkPrice {
     fundingTime: number
 }
 
-export function startMarkPriceStreams() {
-    BinanceAPI.deliveryMarkPriceStream(SYMBOL_BTCUSD, workerMarkPrice, '@1s');
-    BinanceAPI.deliveryMarkPriceStream(SYMBOL_ETHUSD, workerMarkPrice, '@1s');
+export function startMarkPriceStreams(symbols: string[]) {
+    symbols.forEach(x => {
+        BinanceAPI.deliveryMarkPriceStream(x, workerMarkPrice, '@1s');
+    });
 }
 
 async function workerMarkPrice(price: IMarkPrice) {
