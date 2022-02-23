@@ -1,65 +1,70 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Box, Skeleton, Text, useInterval } from '@chakra-ui/react';
+import { getStream, HttpRequest } from './lib/request';
 import Fees from './components/Fees';
 import Positions from './components/Positions';
 // import Trades from './components/Trades';
 import FeeOverview from './components/FeeOverview';
 import BinanceLogo from './assets/logos/Binance.svg';
-import Request from './lib/request';
 import PriceScreener from './components/PriceScreener';
 import AssetsOverview from './components/AssetsOverview';
+import { IStream } from './types/stream';
+import { IFunding } from './types/funding';
+
+interface IState {
+  isLoaded: boolean,
+  isFundingExpired: boolean
+}
 
 // th, td border #222222
 // inner #282a36
 function App() {
-  const [data, setData] = useState<any>({
-    markets: [],
+  const socket = useRef<WebSocket>();
+  const [stream, setStream] = useState<IStream>({
+    prices: [],
     account: [],
+    positions: [],
+  });
+  const [request, setRequest] = useState<IFunding>({
     incomes: [],
     sum: [],
-  });
-  const [state, setState] = useState({
+  })
+  const [state, setState] = useState<IState>({
     isLoaded: false,
     isFundingExpired: false
   });
-  const workerFunding = useCallback(async () => {
+  const workerFunding = async () => {
     const [incomes, sum] = await Promise.all([
-      Request.get('/v1/incomes/list'),
-      Request.get('/v1/incomes/sum')
+      HttpRequest.get('/v1/incomes/list'),
+      HttpRequest.get('/v1/incomes/sum')
     ]);
     return {
       incomes: incomes.data,
       sum: sum.data
     };
-  }, []);
-  const workerFrequent = useCallback(async () => {
-    const [markets, account] = await Promise.all([
-      Request.get('/v1/market'),
-      Request.get('/v1/account')
-    ]);
-    return {
-      markets: markets.data,
-      account: account.data
-    };
-  }, []);
-  const workerInitalize = async () => {
-    const [freq, fund] = await Promise.all([
-      workerFrequent(),
-      workerFunding()
-    ]);
-    setData({
-      markets: freq.markets,
-      account: freq.account,
-      incomes: fund.incomes,
-      sum: fund.sum
-    });
-    setState({
-      ...state,
-      isLoaded: true
-    });
+  };
+  const initStream = async () => {
+    if (!socket.current) {
+      socket.current = getStream();
+      socket.current.onmessage = (event) => {
+        const response = JSON.parse(event.data);
+        setStream(response);
+      }
+    }
+  };
+  const initRequest = async () => {
+    const funding = await workerFunding();
+    setRequest(funding);
   };
   useEffect(() => {
-    workerInitalize();
+    (async () => {
+      await initStream();
+      await initRequest();
+      setState({
+        ...state,
+        isLoaded: true
+      });
+    })();
   }, []);
   /* Countdown Refresh effect
   useEffect(() => {
@@ -76,25 +81,7 @@ function App() {
   }, [state.isFundingExpired, workerFunding]);
   */
   useInterval(() => {
-    (async () => {
-      const freq = await workerFrequent();
-      setData({
-        ...data,
-        markets: freq.markets,
-        account: freq.account
-      });
-      // check countdown expired
-    })();
-  }, 1000);
-  useInterval(() => {
-    (async () => {
-      const fund = await workerFunding();
-      setData({
-        ...data,
-        incomes: fund.incomes,
-        sum: fund.sum
-      });
-    })();
+    initRequest();
   }, 60000);
   return (
     <div className='flex justify-center'>
@@ -120,7 +107,7 @@ function App() {
               <Box className='bg-[#282a36] rounded-xl w-full px-4 py-3'>
                 <PriceScreener
                   data={
-                    data.markets.map((x: any) => {
+                    stream.prices.map((x: any) => {
                       return {
                         symbol: x.symbol,
                         price: x.price,
@@ -144,18 +131,18 @@ function App() {
               </Text>
               <div className='space-y-4'>
                 <AssetsOverview
-                  assets={data.account.assets?.map((asset: any) => {
+                  assets={stream.account?.map((asset: any) => {
                     return {
                       ...asset,
-                      price: data.markets?.find((market: any) => market.symbol.slice(0, 3) === asset.asset)?.price
+                      price: stream.prices?.find((market: any) => market.symbol.slice(0, 3) === asset.asset)?.price
                     }
                   })}
                 />
                 <FeeOverview
-                  data={data.sum?.map((fee: any) => {
+                  data={request.sum?.map((fee: any) => {
                     return {
                       ...fee,
-                      price: data.markets?.find((market: any) => market.symbol === fee.symbol)?.price
+                      price: stream.prices?.find((market: any) => market.symbol === fee.symbol)?.price
                     }
                   })}
                 />
@@ -170,7 +157,7 @@ function App() {
               >
                 포지션
               </Text>
-              <Positions data={data.account.positions} />
+              <Positions data={stream.positions} />
             </div>
             <div className='flex flex-col space-y-4'>
               <div className='bg-[#282a36] px-3 py-4 rounded-xl h-full'>
@@ -182,14 +169,14 @@ function App() {
                 >
                   수수료 내역
                 </Text>
-                <Fees data={data.incomes} />
+                <Fees data={request.incomes} />
               </div>
             </div>
           </div>
         </Skeleton>
         <footer>
           <div className="container mt-1 p-4 mb-4 mx-auto flex justify-center items-center flex-col">
-            <p className="text-sm text-gray-400 font-extrabold">
+            <p className="text-sm text-gray-400 font-bold">
               © 2022 bitpp —
               <a href="https://github.com/blackwaterbread" className="text-gray-500 ml-1" rel="noopener noreferrer" target="_blank">
                 @dayrain

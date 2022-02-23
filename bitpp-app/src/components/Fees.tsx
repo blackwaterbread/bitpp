@@ -12,31 +12,26 @@ import {
   TableColumnHeaderProps,
 } from '@chakra-ui/react';
 import { getPrefix, getPriceColor, Symbols } from '../lib/label';
-
-interface FeesProp {
-  time: string,
-  symbol: string,
-  amount: number
-}
+import { IncomesEntity } from '../types/funding';
 
 const Header = (props: TableColumnHeaderProps) => (
   <Th
     borderColor={Colors.inner}
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     {...props}
   />
 );
 const Cell = (props: TableCellProps) => (
   <Td
     textColor={Colors.text}
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     // fontWeight='semibold' 
     borderColor={Colors.inner}
     {...props}
   />
 );
 
-function Fees(props: { data: FeesProp[] }) {
+function Fees(props: { data: IncomesEntity[] }) {
   return (
     <Box overflowX='auto' className='pb-2'>
       <Table minWidth='500px' size='sm' textColor={Colors.text}>
@@ -49,15 +44,15 @@ function Fees(props: { data: FeesProp[] }) {
         </Thead>
         <Tbody>
           {
-            props.data.map((pos: FeesProp) => {
+            props.data?.map((pos: IncomesEntity, index: number) => {
               const prefix = getPrefix(pos.amount);
               const color = getPriceColor(pos.amount);
               const unit = pos.symbol.slice(0, 3);
               return (
-                <Tr>
-                  <Cell>{DateTime.fromMillis(Number(pos.time)).toLocaleString(DateTime.DATETIME_SHORT)}</Cell>
-                  <Cell textColor={color}>{prefix}{pos.amount} {unit}</Cell>
-                  <Cell>{Symbols[pos.symbol]}</Cell>
+                <Tr key={`${pos.symbol}_${index}`}>
+                  <Cell key={`${pos.symbol}_time`}>{DateTime.fromMillis(Number(pos.time)).toLocaleString(DateTime.DATETIME_SHORT)}</Cell>
+                  <Cell key={`${pos.symbol}_amount`} textColor={color}>{prefix}{pos.amount} {unit}</Cell>
+                  <Cell key={`${pos.symbol}_name`}>{Symbols[pos.symbol]}</Cell>
                 </Tr>
               )
             })

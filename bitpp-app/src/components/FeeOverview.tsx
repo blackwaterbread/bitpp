@@ -28,7 +28,7 @@ const Header = (props: TableColumnHeaderProps) => (
     paddingX='8px'
     textAlign='center'
     fontSize='md'
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     borderColor={Colors.inner}
     {...props}
   />
@@ -40,7 +40,7 @@ const Cell = (props: TableCellProps) => (
     textAlign='center'
     fontSize='md'
     // fontWeight='semibold' 
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     textColor={Colors.text}
     borderColor={Colors.inner} {...props}
   />
@@ -64,9 +64,9 @@ function FeeOverview(props: FeeOverviewProp) {
               const color = getPriceColor(x.amount);
               const unit = x.symbol.slice(0, 3);
               return (
-                <Tr>
-                  <Cell>{Symbols[x.symbol]}</Cell>
-                  <Cell textColor={color}>
+                <Tr key={x.symbol}>
+                  <Cell key={`${x.symbol}_name`}>{Symbols[x.symbol]}</Cell>
+                  <Cell key={`${x.symbol}_price`} textColor={color}>
                     {prefix}{x.amount.toFixed(8)} {unit} <br />
                     <Text
                       fontSize='sm'

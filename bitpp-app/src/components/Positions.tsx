@@ -13,22 +13,10 @@ import {
   Text,
 } from '@chakra-ui/react';
 import { getPrefix, getPriceColor, MarginTypes, Symbols } from '../lib/label';
-
-interface Position {
-  symbol: string,
-  leverage: number,
-  marginType: string,
-  side: 'Buy' | 'Sell',
-  size: number,
-  liqPrice: number,
-  entryPrice: number,
-  markPrice: number
-  margin: number,
-  unrealizedProfit: number,
-}
+import { PositionsEntity } from '../types/stream';
 
 interface PositionsProp {
-  data: Position[]
+  data: PositionsEntity[]
 }
 
 const Header = (props: TableColumnHeaderProps) => (
@@ -37,7 +25,7 @@ const Header = (props: TableColumnHeaderProps) => (
     paddingY='6px'
     minWidth='80px'
     width='100px'
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     borderColor={Colors.inner}
     {...props}
   />
@@ -48,7 +36,7 @@ const Cell = (props: TableCellProps) => (
     paddingX='2px'
     paddingY='6px'
     textColor={Colors.text}
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     // fontWeight='semibold'
     borderColor={Colors.inner}
     {...props}
@@ -59,7 +47,7 @@ function Positions(props: PositionsProp) {
   return (
     <Box overflowX='auto' className='space-y-4'>
       {
-        props.data?.map((pos: Position) => {
+        props.data?.map((pos: PositionsEntity) => {
           const pnl = ((1 - (pos.markPrice / pos.entryPrice)) * 100);
           const prefix = getPrefix(pnl);
           const colorSide = pos.side === 'Buy' ? '#68D391' : '#F56565';
@@ -67,22 +55,22 @@ function Positions(props: PositionsProp) {
           const colorSize = getPriceColor(pos.size);
           const unit = pos.symbol.slice(0, 3);
           return (
-            <div className='px-3 space-y-2'>
+            <div key={pos.symbol} className='px-3 space-y-2'>
               <div className='flex justify-between'>
                 <div className='flex space-x-2 items-center'>
                   <div className='w-[4px] h-4 -mr-1' style={{ backgroundColor: colorSide }} />
                   <Text
                     fontSize='lg'
                     textColor={Colors.text}
-                    fontFamily='NanumSquareExtraBold'
+                    fontFamily='NanumSquareBold'
                     // fontWeight='semibold'
                   >
                     {Symbols[pos.symbol]}
                   </Text>
                 </div>
                 <div className='space-x-2'>
-                  <Tag fontFamily='NanumSquareExtraBold' colorScheme='green'>{MarginTypes[pos.marginType]}</Tag>
-                  <Tag fontFamily='NanumSquareExtraBold' colorScheme='orange'>{pos.leverage}x</Tag>
+                  <Tag fontFamily='NanumSquareBold' colorScheme='green'>{MarginTypes[pos.marginType]}</Tag>
+                  <Tag fontFamily='NanumSquareBold' colorScheme='orange'>{pos.leverage}x</Tag>
                 </div>
               </div>
               <div className='flex flex-col space-y-2'>

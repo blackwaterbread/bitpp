@@ -31,7 +31,7 @@ const Header = (props: TableColumnHeaderProps) => (
   <Th
     // textAlign='center'
     padding='1'
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     borderColor={Colors.inner}
     {...props}
   />
@@ -41,7 +41,7 @@ const Cell = (props: TableCellProps) => (
   <Td
     // textAlign='center'
     padding='1'
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     // fontWeight='semibold'
     textColor={Colors.text}
     borderColor={Colors.inner}
@@ -63,7 +63,7 @@ function PriceScreener(props: ScreenerProp) {
           </Tr>
         </Thead>
         <Tbody>
-          {props.data.map((x: MarketPrice) => <Screen data={x} />)}
+          {props.data.map((x: MarketPrice) => <Screen key={x.symbol} data={x} />)}
         </Tbody>
       </Table>
     </Box>
@@ -71,6 +71,7 @@ function PriceScreener(props: ScreenerProp) {
 }
 
 function Screen(props: { data: MarketPrice }) {
+  const { symbol, price, changePercent, fundingFee } = props.data;
   const refRecentPrice = useRef(0);
   const [colorPrice, setColorPrice] = useState('');
   const prefix = getPrefix(props.data.changePercent);
@@ -82,12 +83,12 @@ function Screen(props: { data: MarketPrice }) {
     refRecentPrice.current = props.data.price;
   }, [props.data]);
   return (
-    <Tr>
-      <Cell>{Symbols[props.data.symbol]}</Cell>
-      <Cell textColor={colorPrice}>{props.data.price.toFixed(1)}</Cell>
-      <Cell textColor={colorChange}>{prefix}{props.data.changePercent.toFixed(2)}%</Cell>
-      <Cell textColor='orange.500'>{props.data.fundingFee.toFixed(4)}%</Cell>
-      <Cell>{countdown}</Cell>
+    <Tr key={symbol}>
+      <Cell key={`${symbol}_name`}>{Symbols[symbol]}</Cell>
+      <Cell key={`${symbol}_price`} textColor={colorPrice}>{price.toFixed(1)}</Cell>
+      <Cell key={`${symbol}_changePercent`} textColor={colorChange}>{prefix}{changePercent.toFixed(2)}%</Cell>
+      <Cell key={`${symbol}_fundingFee`} textColor='orange.500'>{fundingFee.toFixed(4)}%</Cell>
+      <Cell key={`${symbol}_countdown`}>{countdown}</Cell>
     </Tr>
   );
 }

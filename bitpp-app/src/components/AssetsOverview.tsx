@@ -29,7 +29,7 @@ const Header = (props: TableColumnHeaderProps) => (
     paddingX='8px'
     textAlign='center'
     fontSize='md'
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     borderColor={Colors.inner}
     {...props}
   />
@@ -40,7 +40,7 @@ const Cell = (props: TableCellProps) => (
     textAlign='center'
     fontSize='md'
     // fontWeight='semibold' 
-    fontFamily='NanumSquareExtraBold'
+    fontFamily='NanumSquareBold'
     textColor={Colors.text}
     borderColor={Colors.inner}
     {...props}
