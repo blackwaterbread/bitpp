@@ -8,24 +8,26 @@ html {
 }
 
 body {
-  transform: rotate(0.04deg);
   margin: 0;
+  min-height: 100vh;
+  width: 100vw;
+  background-color: #222222 !important;
+  transform: rotate(0.04deg);
+  overflow-x: hidden;
   font-family: "NanumSquare", -apple-system, BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
     "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  min-height: 100vh;
-  width: 100vw;
   user-select: none;
 }
 
-*::-webkit-scrollbar {
+::-webkit-scrollbar {
   width: 8px;
   height: 8px;
   background: transparent;
 }
 
-*::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb{
   background-color: #4A5568;
   border-radius: 10px;
 }
